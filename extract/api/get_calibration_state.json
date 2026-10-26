@@ -1,0 +1,1 @@
+{"state": "Standard", "expr": "(3.11683E-06 * angle^5 - 0.000786275 * angle^4 + 0.07871266 * angle^3 - 3.916024112 * angle^2 + 98.73244 * angle - 8.09818) + -12.3354", "expr-valid": true}

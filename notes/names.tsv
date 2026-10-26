@@ -1,0 +1,9 @@
+400e0520	accel_init_lis3dh
+400e04d8	accel_probe_addr
+400e0450	accel_read_reg
+400e03e4	accel_write_reg
+4010eaf8	i2c_param_config
+4010e58c	i2c_driver_install
+4010ef8c	i2c_write_addr_byte
+400e7ed0	tmp1075_write_reg
+400e7f48	tmp1075_read_reg

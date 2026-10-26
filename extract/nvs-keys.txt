@@ -1,0 +1,22 @@
+NVS pages: 6   keys: 21
+espwifimgr     password                      blob     64  <redacted-wifi-pass>
+espwifimgr     settings                      blob    128  ap_ssid=RAPT Pill xxxxxx ap_pass=kegland1 flags=[1, 1, 1, 1, 0, 0, 0, 0]
+espwifimgr     ssid                          blob     32  <redacted-ssid>
+misc           log                           blob      4  03000100
+nimble_bond    local_irk_1                   blob     23  <redacted-ble-key>
+nvs            boot_unstable                  u32      8  0
+nvs            cal_a1                         u32      8  1108462082  (36.4473)
+nvs            cal_d1                         u32      8  1148846080  (1000)
+nvs            cal_state                      u32      8  1
+nvs            expr                           str    135  (3.11683E-06 * angle^5 - 0.000786275 * angle^4 + 0.07871266 * angle^3 - 3.916024112 * angle^2 + 98.73244 * angle - 8.09818) + -12.3354
+nvs            fw_rollback                    str      5  none
+nvs            interval_b                     u32      8  60
+nvs            ota_aws                        u32      8  1
+nvs            refresh_tok                    str     65  <redacted-refresh-token>
+nvs            registered                     u32      8  1
+nvs            telem_method                   u32      8  1
+nvs            ver_ble_serv                   str      6  2.0.0
+nvs.net80211   ap.sndchan                      u8      8  1
+phy            cal_data                      blob   1904  <redacted-blob>
+phy            cal_mac                       blob      6  78e36dxxxxxx
+phy            cal_version                    u32      8  4860

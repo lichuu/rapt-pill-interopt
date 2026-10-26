@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en" data-color-scheme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAPT Pill · custom firmware installer</title>
+<style>
+:root { color-scheme: dark;
+  --bg:#0d1b1e; --sunken:#091418; --face:#102126; --card:#132428; --panel2:#1b3540;
+  --border:#1e3840; --text:#d0e8f0; --muted:#6a9aaa; --accent:#b0d8f8; --primary:#356f89;
+  --ok:#36c87a; --gold:#ffd178; --fault:#e44840; --radius:.625rem; }
+* { box-sizing:border-box; }
+body { margin:0; padding:1.5rem; background:var(--bg); color:var(--text);
+  font:15px/1.5 ui-sans-serif,system-ui,"Inter",sans-serif; }
+.wrap { max-width:56rem; margin:0 auto; display:grid; gap:1rem; }
+h1 { font-size:1.15rem; margin:0; letter-spacing:.02em; }
+.sub { color:var(--muted); font-size:.85rem; margin:.15rem 0 0; }
+.card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+  padding:1rem; display:grid; gap:.7rem; }
+.card h2 { font-size:.72rem; text-transform:uppercase; letter-spacing:.09em;
+  color:var(--muted); margin:0; font-weight:600; }
+.row { display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; }
+button { background:var(--primary); color:#eaf6ff; border:0; border-radius:calc(var(--radius) / 2);
+  padding:.55rem .95rem; font:inherit; font-weight:600; cursor:pointer; }
+button:disabled { opacity:.4; cursor:default; }
+button.ghost { background:var(--panel2); color:var(--text); }
+button.warn { background:#5a2a26; color:#ffd8d4; }
+input[type=file],select,input[type=text] { background:var(--sunken); color:var(--text);
+  border:1px solid var(--border); border-radius:calc(var(--radius) / 2); padding:.45rem .6rem; font:inherit; }
+.bar { height:.5rem; background:var(--sunken); border-radius:99px; overflow:hidden; }
+.bar i { display:block; height:100%; width:0; background:var(--ok); transition:width .15s; }
+pre { margin:0; padding:.7rem; background:var(--sunken); border:1px solid var(--border);
+  border-radius:calc(var(--radius) / 2); font:12px/1.45 ui-monospace,monospace;
+  white-space:pre-wrap; word-break:break-word; max-height:16rem; overflow:auto; }
+.pills { display:flex; gap:.4rem; flex-wrap:wrap; }
+.pill { font-size:.72rem; padding:.18rem .5rem; border-radius:99px;
+  background:var(--face); border:1px solid var(--border); color:var(--muted); }
+.pill.on { color:var(--ok); border-color:#1d5c3c; }
+.pill.err { color:var(--fault); border-color:#5a2a26; }
+ol { margin:0; padding-left:1.2rem; }
+code { background:var(--sunken); padding:.05rem .3rem; border-radius:.25rem; font-size:.85em; }
+details summary { cursor:pointer; color:var(--accent); font-size:.9rem; }
+label { font-size:.85rem; color:var(--muted); display:flex; gap:.4rem; align-items:center; }
+a { color:var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div>
+    <h1>RAPT Pill · custom firmware installer</h1>
+    <p class="sub">First install over the USB-UART cable, straight from Chrome. Every update after
+      that is the pill's own <code>/firmware</code> page — no cable, no CLI.</p>
+  </div>
+
+  <div class="card">
+    <h2>1 · Wire it up</h2>
+    <div class="pills" id="wires">
+      <span class="pill">adapter RXD → pill E_TXD</span>
+      <span class="pill">adapter TXD → pill E_RXD</span>
+      <span class="pill">adapter GND → pill GND</span>
+      <span class="pill">adapter RTS → pill EN</span>
+      <span class="pill">strap (GPIO0) → GND clip</span>
+      <span class="pill">pill powered from USB-C</span>
+    </div>
+    <details>
+      <summary>Why the clip, and what the pins do</summary>
+      <p>The header reads <code>GND · E_TXD · E_RXD · strap · EN · 3V3</code>. The strap pin is
+        GPIO0: low at reset puts the ROM bootloader in charge, which is the only way to write flash.
+        This adapter has no DTR, so the clip replaces it — clip on for flashing, clip off to run the
+        app. <code>VCC</code> on the adapter is a 3.3 V output; leave it unplugged, the pill runs on
+        its own USB-C power.</p>
+      <p>Send wires are crossed: the adapter's TXD goes to the pill's TXD-side pin labelled E_RXD,
+        because that label names the pill's own direction.</p>
+    </details>
+  </div>
+
+  <div class="card">
+    <h2>2 · Connect</h2>
+    <div class="row">
+      <button id="connect">Connect</button>
+      <select id="baud" title="Serial speed">
+        <option value="921600">921600</option>
+        <option value="460800">460800</option>
+        <option value="115200" selected>115200 (safest)</option>
+      </select>
+      <div class="pills" id="ident"></div>
+    </div>
+    <p class="sub">Clip on, pill powered, then pick the serial port Chrome offers.</p>
+  </div>
+
+  <div class="card">
+    <h2>3 · Flash</h2>
+    <div class="row">
+      <input type="file" id="file" accept=".bin">
+      <label><input type="checkbox" id="compress" checked> compress</label>
+      <button id="flash" disabled>Flash to ota_1</button>
+      <button id="stock" class="warn" disabled>Boot stock again</button>
+    </div>
+    <div class="bar"><i id="prog"></i></div>
+    <p class="sub" id="note">The app goes to <code>0x190000</code> (<code>ota_1</code>) and the boot
+      sequence is written to <code>0xd000</code>/<code>0xd800</code>. <code>ota_0</code> keeps
+      whatever is in it, so stock stays one button away.</p>
+  </div>
+
+  <div class="card">
+    <h2>4 · Run it</h2>
+    <div class="row">
+      <button id="boot" class="ghost" disabled>Release reset (RTS pulse)</button>
+    </div>
+    <ol class="sub" id="after">
+      <li>Take the clip off the strap pin.</li>
+      <li>Press <em>Release reset</em> — the RTS line pulses EN and the pill boots the new app.</li>
+      <li>Unprovisioned pills raise <code>RAPT-Pill-&lt;mac tail&gt;</code>, password
+        <code>kegland1</code>; open <code>http://172.217.28.1/</code> and pick your Wi-Fi.
+        A pill that already knows a network just joins it — check your router for
+        <code>192.168.1.x</code>.</li>
+      <li>From then on, updates are <code>POST /firmware</code> from the pill's own pages.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>Log</h2>
+    <pre id="log">idle</pre>
+  </div>
+</div>
+
+<script type="module">
+const APP_OFF = 0x190000;            // ota_1: the slot the CFW installer owns
+const OTA_DATA = [0xd000, 0xd800];   // both otadata copies, seq wins by CRC + value
+const $ = (id) => document.getElementById(id);
+const say = (m) => { const p = $('log'); p.textContent += '\n' + m; p.scrollTop = p.scrollHeight; };
+$('log').textContent = 'idle';
+
+let mod, ld;
+try { mod = await import('./esp-web-flasher.mjs'); }
+catch { mod = await import('https://cdn.jsdelivr.net/npm/esp-web-flasher@5.1.5/+esm'); }
+say('loader ready');
+
+$('connect').onclick = async () => {
+  try {
+    ld = await mod.connect(say);
+    await ld.detectFlashSize().catch(() => {});
+    ident([{ t: ld.chipName || 'esp32', on: true },
+           { t: 'flash ' + (ld.flashSize || '?'), on: true }]);
+    $('flash').disabled = !$('file').files.length;
+    $('stock').disabled = false;
+    $('boot').disabled = false;
+    say('synced with the ROM bootloader');
+  } catch (e) { say('connect: ' + e); ident([{ t: 'no sync', err: true }]); }
+};
+
+$('file').onchange = async () => {
+  const f = $('file').files[0];
+  $('flash').disabled = !f && !ld;
+  if (!f) return;
+  const buf = await f.arrayBuffer();
+  const h = [...new Uint8Array(await crypto.subtle.digest('SHA-256', buf))]
+    .map((b) => b.toString(16).padStart(2, '0')).join('');
+  const app = h.slice(0, 16);
+  ident([...document.querySelectorAll('#ident .pill')].map((p) => ({ t: p.textContent, on: true })),
+        [{ t: (f.size / 1048576).toFixed(2) + ' MiB', on: true }, { t: 'sha256 ' + app, on: true }]);
+  say(`selected ${f.name}  ${(f.size / 1048576).toFixed(2)} MiB\nsha256 ${h}`);
+  $('file').dataset.buf = '';
+  $('file')._buf = buf;
+};
+
+async function write(data, off, compress) {
+  say(`writing ${(data.byteLength / 1024).toFixed(0)} KiB → 0x${off.toString(16)}`);
+  await ld.flashData(data, (n, t) => { $('prog').style.width = (100 * n / t) + '%'; }, off, compress);
+  $('prog').style.width = '100%';
+}
+
+async function otadata(name) {
+  const r = await fetch(name);
+  return await r.arrayBuffer();
+}
+
+$('flash').onclick = async () => {
+  if (!ld) return;
+  try {
+    const baud = +$('baud').value;
+    if (baud !== 115200) { await ld.setBaudrate(baud); await ld.reconfigurePort(baud); say('baud ' + baud); }
+    await write($('file')._buf, APP_OFF, $('compress').checked);
+    for (const off of OTA_DATA) await write(await otadata('otadata-ota1.bin'), off, false);
+    say('done. clip off, then press Release reset');
+  } catch (e) { say('flash: ' + e); $('prog').style.width = '0'; }
+};
+
+$('stock').onclick = async () => {
+  if (!ld) return;
+  if (!confirm('Point the bootloader at ota_0 (the stock slot)? Nothing is erased.')) return;
+  try {
+    for (const off of OTA_DATA) await write(await otadata('otadata-ota0.bin'), off, false);
+    say('boot slot is ota_0. clip off, Release reset, and stock comes back');
+  } catch (e) { say('rollback: ' + e); }
+};
+
+$('boot').onclick = async () => {
+  try { await ld.hardReset(false); say('EN pulsed'); } catch (e) { say('reset: ' + e); }
+};
+
+function ident(list, extra = []) {
+  const all = [...list, ...extra];
+  $('ident').innerHTML = all.map((p) =>
+    `<span class="pill ${p.err ? 'err' : p.on ? 'on' : ''}">${p.t}</span>`).join('');
+}
+if (!('serial' in navigator)) {
+  say('this browser has no Web Serial — use Chrome, Edge or Opera on the desktop');
+  $('connect').disabled = true;
+}
+</script>
+</body>
+</html>

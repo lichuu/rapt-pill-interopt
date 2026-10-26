@@ -1,0 +1,33 @@
+# device images and tool output: reproducible, big, and the flash dump is a backup
+extract/*.bin
+extract/nvs-raw.bin
+ghidra/
+out/
+out2/
+*.elf
+*.bin
+!docs/**/*.bin
+firmware/build/
+firmware/sdkconfig
+firmware/managed_components/
+dependencies.lock
+.pi/
+__pycache__/
+firmware/webflash/pill_fw.bin
+
+# headless ghidra run logs (absolute local paths in every line)
+INFO
+WARN
+ghidra-*.log
+
+# our own firmware image: ships, so the web-flash page works out of the box
+!firmware/webflash/pill_fw.bin
+!firmware/webflash/otadata-ota0.bin
+!firmware/webflash/otadata-ota1.bin
+
+# carved out of Rapt firmware: local analysis input, never published
+extract/assets/
+extract/web/
+notes/strings_all.txt
+notes/string_map.tsv
+rapt-pill-*.elf

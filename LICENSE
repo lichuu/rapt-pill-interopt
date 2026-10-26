@@ -1,0 +1,35 @@
+MIT License
+
+Copyright (c) 2026 the rapt-pill-re authors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Third-party code, under its own licenses (kept in place, unmodified):
+
+- firmware/tests/LICENSE.rapt-ble - MIT, Jan Cermak; the reference decoder for
+  the 23-byte BLE advertisement structs (firmware/tests/rapt_ble_parser_reference.py).
+- firmware/webflash/esp-web-flasher.mjs - MIT, esp-web-flasher 5.1.5.
+- firmware/webflash/pako.mjs - MIT AND Zlib, pako 2.0.4.
+
+The analysed firmware is Rapt's property and is not distributed here: nothing in
+this repository is a copy of it. `extract/certs/` holds public root certificates
+found in the image's CA bundle, `extract/api/` holds responses captured from a pill
+we own, and everything under `notes/` is our own observation. The web assets
+`scripts/extract_assets.py` carves are Rapt's, stay gitignored, and are not
+published.

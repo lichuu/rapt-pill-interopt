@@ -1,0 +1,33 @@
+NVS pages: 4   keys: 21
+  incomplete blob phy/cal_mac: 1/255 chunks, 6 of 6 bytes
+  incomplete blob espwifimgr/ssid: 1/255 chunks, 32 of 32 bytes
+  incomplete blob espwifimgr/password: 1/255 chunks, 64 of 64 bytes
+  incomplete blob espwifimgr/settings: 1/255 chunks, 128 of 128 bytes
+  incomplete blob nimble_bond/local_irk_1: 1/255 chunks, 23 of 23 bytes
+  incomplete blob nimble_bond/our_sec_1: 1/255 chunks, 88 of 88 bytes
+  incomplete blob nimble_bond/peer_sec_1: 1/255 chunks, 88 of 88 bytes
+  incomplete blob nimble_bond/rpa_rec_1: 1/255 chunks, 14 of 14 bytes
+  incomplete blob nimble_bond/cccd_sec_1: 1/255 chunks, 16 of 16 bytes
+  incomplete blob nimble_bond/csfc_sec_1: 1/255 chunks, 8 of 8 bytes
+  incomplete blob phy/cal_data: 1/255 chunks, 1904 of 1904 bytes
+espwifimgr     password                 blob_partial     64  <redacted-hex>
+espwifimgr     settings                 blob_partial    128  <redacted-hex>
+espwifimgr     ssid                     blob_partial     32  <redacted-hex>
+nimble_bond    cccd_sec_1               blob_partial     16  <redacted-ble-key>
+nimble_bond    csfc_sec_1               blob_partial      8  <redacted-ble-key>
+nimble_bond    local_irk_1              blob_partial     23  <redacted-ble-key>
+nimble_bond    our_sec_1                blob_partial     88  <redacted-ble-key>
+nimble_bond    peer_sec_1               blob_partial     88  <redacted-ble-key>
+nimble_bond    rpa_rec_1                blob_partial     14  <redacted-ble-key>
+nvs            boot_unstable                  u32      8  0
+nvs            cal_state                      u32      8  0
+nvs            fw_rollback                    str      5  none
+nvs            interval_b                     u32      8  60
+nvs            ota_aws                        u32      8  1
+nvs            telem_method                   u32      8  1
+nvs            temp_offset                    u32      8  0
+nvs            ver_ble_serv                   str      6  2.0.0
+nvs.net80211   ap.sndchan                      u8      8  1
+phy            cal_data                 blob_partial   1904  <redacted-blob>
+phy            cal_mac                  blob_partial      6  78e36dxxxxxx
+phy            cal_version                    u32      8  4860

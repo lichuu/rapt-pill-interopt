@@ -1,0 +1,9 @@
+# Real partition table, read from the device's own boot log (4 MB flash,
+# ESP-IDF v4.3.2 bootloader, chip revision 1). No nvs at 0x9000; bootloader at
+# 0x1000, partition table at 0x8000.
+# Name,   Type, SubType, Offset,   Size,     Flags
+otadata,  data, ota,     0x0000d000, 0x00002000,
+phy_init, data, phy,     0x0000f000, 0x00001000,
+ota_0,    app,  ota_0,   0x00010000, 0x00180000,
+ota_1,    app,  ota_1,   0x00190000, 0x00180000,
+nvs,      data, nvs,     0x00310000, 0x00080000,
